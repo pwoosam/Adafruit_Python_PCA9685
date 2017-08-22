@@ -112,3 +112,23 @@ class PCA9685(object):
         self._device.write8(ALL_LED_ON_H, on >> 8)
         self._device.write8(ALL_LED_OFF_L, off & 0xFF)
         self._device.write8(ALL_LED_OFF_H, off >> 8)
+
+    def set_pwm_on(self, channel):
+        """Set PWM channel to always on."""
+        self._device.write8(LED0_ON_H + 4 * channel, 0x10)
+        self._device.write8(LED0_OFF_H + 4 * channel, 0)
+
+    def set_pwm_off(self, channel):
+        """Set PWM channel to always off."""
+        self._device.write8(LED0_ON_H + 4 * channel, 0)
+        self._device.write8(LED0_OFF_H + 4 * channel, 0x10)
+        
+    def set_all_pwm_on(self):
+        """Set all PWM to always on."""
+        self._device.write8(ALL_LED_ON_H, 0x10)
+        self._device.write8(ALL_LED_OFF_H, 0)
+
+    def set_all_pwm_off(self):
+        """Set all PWM to always off.""""
+        self._device.write8(ALL_LED_ON_H, 0)
+        self._device.write8(ALL_LED_OFF_H, 0x10)
