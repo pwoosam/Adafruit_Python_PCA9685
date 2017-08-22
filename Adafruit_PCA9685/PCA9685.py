@@ -81,6 +81,12 @@ class PCA9685(object):
         self._device.write8(MODE1, mode1)
         time.sleep(0.005)  # wait for oscillator
 
+    def _check_on_off_vals(self, on, off):
+        """Check on and off values to prevent odd PWM behavior."""
+        assert on >= 0 and on < 4096, "on must be between 0 and 4095"
+        assert off >= 0 and off < 4096, "off must be between 0 and 4095"
+        assert on != off, "on must not be equal to off"
+
     def set_pwm_freq(self, freq_hz):
         """Set the PWM frequency to the provided value in hertz."""
         prescaleval = 25000000.0    # 25MHz
@@ -101,6 +107,7 @@ class PCA9685(object):
 
     def set_pwm(self, channel, on, off):
         """Sets a single PWM channel."""
+        self._check_on_off_vals(on, off)
         self._device.write8(LED0_ON_L+4*channel, on & 0xFF)
         self._device.write8(LED0_ON_H+4*channel, on >> 8)
         self._device.write8(LED0_OFF_L+4*channel, off & 0xFF)
@@ -108,6 +115,7 @@ class PCA9685(object):
 
     def set_all_pwm(self, on, off):
         """Sets all PWM channels."""
+        self._check_on_off_vals(on, off)
         self._device.write8(ALL_LED_ON_L, on & 0xFF)
         self._device.write8(ALL_LED_ON_H, on >> 8)
         self._device.write8(ALL_LED_OFF_L, off & 0xFF)
